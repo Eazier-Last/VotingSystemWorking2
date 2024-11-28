@@ -20,7 +20,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 // import TextField from "@mui/material/TextField";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import logo from "./LCSC.png";
+// import logo from "./LCSC.png";
 import "./Modals/login.css";
 // import Button from "@mui/material/Button";
 // import CloseIcon from "@mui/icons-material/Close";
@@ -73,11 +73,11 @@ function Login({ setAuthType }) {
 
           <form onSubmit={handleLogin}>
             <div>
-              <img
+              {/* <img
                 className="LCSClogo"
                 src={logo}
                 alt="LC Student Council Logo"
-              ></img>
+              ></img> */}
               <Box
                 component="form"
                 sx={{ "& .MuiTextField-root": { m: 1, width: "50ch" } }}
