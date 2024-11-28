@@ -171,7 +171,7 @@ useEffect(() => {
         if (totalSeconds <= 0) {
           clearInterval(intervalRef.current);
           setIsRunning(false);
-          return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+          return { days: 10, hours: 10, minutes: 10, seconds: 0 };
         }
         
         const newTotalSeconds = totalSeconds - 
@@ -312,7 +312,7 @@ useEffect(() => {
             if (totalSeconds <= 0) {
               clearInterval(intervalRef.current);
               setIsRunning(false);
-              return { hours: 0, minutes: 0, seconds: 0 };
+              return {days:10, hours: 10, minutes: 10, seconds: 0 };
             }
   
             const newHours = Math.floor((totalSeconds - 1) / 3600);
@@ -413,7 +413,7 @@ useEffect(() => {
     label="Days"
     type="number"
     name="days"
-    value={100}
+    value={time.days}
     onChange={handleTimeChange}
     InputProps={{ inputProps: { min: 0, max: 365 } }}
     sx={{ width: "80px", marginRight: "10px" }}
@@ -424,7 +424,7 @@ useEffect(() => {
     label="Hours"
     type="number"
     name="hours"
-    value={10}
+    value={time.hours}
     onChange={handleTimeChange}
     InputProps={{ inputProps: { min: 0, max: 23 } }}
     sx={{ width: "80px", marginRight: "10px" }}
