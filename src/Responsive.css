@@ -8,6 +8,30 @@
     z-index: 200;
     display: none;
   }
+
+  .confirmTitle{
+    width: auto;
+    text-align: center;
+    background-color: #1ab394;
+    color: white;
+  }
+
+  .confirmVoteBtns{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 10px;
+    
+    margin-top: -15px;
+  }
+
+
+
+
+  .confirmVoteContainer{
+    width: 25vw;
+  }
+  
   
   .Sidebar {
 
@@ -21,6 +45,8 @@
       /* margin-bottom: 10px; */
     width: 40ch;
 }
+
+.thankYouBody
   
   @media (max-width: 600px) {
     .Sidebar {
@@ -82,12 +108,32 @@
     }
 
     .candidateVoteInfo{
+      border: none;
       background-color: rgba(255, 255, 255, 0) !important;
       width: 10px;
       font-size: .5rem;
       /* position: ; */
       margin-top: -30px;
     }
+
+    .tableConfirm{
+      /* width: 100vw; */
+      width: 100vw;
+    }
+
+    .dialogTitle{
+      width: 100px;
+    }
+
+    .confirmVoteContainer{
+      width: 80vw;
+    }
+
+    .confirmBtns{
+      /* width: 300px; */
+      
+    }
+   
 
 
   }

@@ -14,22 +14,23 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import "./Modals.css";
+import "../../Responsive.css";
 
 // Confirmation Modal Component
 function ConfirmVote({ open, onClose, selectedCandidatesList, onSubmit }) {
   return (
-    <Dialog open={open} onClose={onClose}>
-      <div class="confirmVote">
-        <DialogTitle className="dialogTitle">Confirm Your Vote</DialogTitle>
-        <DialogContent className="confirmTable">
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>
+    <Dialog  open={open} onClose={onClose}>
+      <div className="confirmVoteContainer">
+        <DialogTitle className="confirmTitle">Confirm Your Vote</DialogTitle>
+        <DialogContent>
+          <TableContainer  component={Paper}>
+            <Table >
+              <TableHead >
+                <TableRow >
+                  <TableCell >
                     <strong>Position</strong>
                   </TableCell>
-                  <TableCell>
+                  <TableCell >
                     <strong>Name</strong>
                   </TableCell>
                 </TableRow>
@@ -46,9 +47,9 @@ function ConfirmVote({ open, onClose, selectedCandidatesList, onSubmit }) {
           </TableContainer>
         </DialogContent>
         <DialogActions>
-          <div class="confirmVoteBtn">
+          <div class="confirmVoteBtns">
             <Button
-              className="confirmBtn"
+              className="confirmBtns"
               type="submit"
               variant="outlined"
               onClick={onClose}
@@ -60,7 +61,7 @@ function ConfirmVote({ open, onClose, selectedCandidatesList, onSubmit }) {
               Cancel
             </Button>
             <Button
-              className="confirmBtn"
+              className="confirmBtns"
               type="submit"
               variant="contained"
               onClick={onSubmit}
