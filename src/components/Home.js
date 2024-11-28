@@ -83,35 +83,63 @@ useEffect(() => {
 }, []);
 
 
-  const sendEmail = async (e) => {
-    e.preventDefault();
-  
-    if (allEmails.length === 0) {
-      alert("No emails found to send.");
-      return;
-    }
-  
-    // Loop through all emails and send the email
-    for (const email of allEmails) {
+const sendEmail = async (e) => {
+  e.preventDefault();
+
+  // Fetch all users with necessary details
+  const { data: users, error } = await supabase
+    .from("users")
+    .select("name, studentNumber, password, gmail");
+
+  if (error) {
+    console.error("Error fetching user details:", error);
+    alert("Failed to fetch user details. Please try again later.");
+    return;
+  }
+
+  if (!users || users.length === 0) {
+    alert("No users found to send emails to.");
+    return;
+  }
+
+  // Send email to each user
+  for (const user of users) {
+    if (user.gmail) {
       try {
         await emailjs.send(
           "service_ffx6rwz", // Replace with your service ID
           "template_171uqr7", // Replace with your template ID
           {
-            student_email: email, // Send to each email address
-            subject: form.current.subject.value, // Use form data
-            message: form.current.message.value, // Use form data
+            student_email: user.gmail, // Recipient email
+            subject: form.current.subject.value, // Use form data for subject
+            message: form.current.message.value.replace(
+              /{name}|{studentNumber}|{password}/g, (match) => {
+                switch (match) {
+                  case "{name}":
+                    return user.name || "Student";
+                  case "{studentNumber}":
+                    return user.studentNumber || "N/A";
+                  case "{password}":
+                    return user.password || "N/A";
+                  default:
+                    return match;
+                }
+              }
+            ), // Replace placeholders in the message with actual data
           },
           "DFxzih1aS0PB7dD9M" // Replace with your public key
         );
-        console.log(`Email sent successfully to ${email}`);
+
+        console.log(`Email sent successfully to ${user.gmail}`);
       } catch (error) {
-        console.error(`Failed to send email to ${email}:`, error.text);
+        console.error(`Failed to send email to ${user.gmail}:`, error.text);
       }
     }
-  
-    alert("Emails have been sent to all users.");
-  };
+  }
+
+  alert("Emails have been sent to all users.");
+};
+
   
   useEffect(() => {
     const fetchUserEmail = async () => {
@@ -553,17 +581,18 @@ useEffect(() => {
                   
                       <div>
                         <TextField
-                          id="outlined-multiline-static"
-                          label="Message"
-                          name="message"
-                          multiline
-                          rows={6}
-                          required
-                          sx={{ width: "30ch" }}
-                        //   value={
-                        //     "Hello {name} <br/> The election for Student Council has Started <br/> <br/> From<br/> BSIT 4B Researchers"
-                        //   }
-                        />
+  id="outlined-multiline-static"
+  label="Message"
+  name="message"
+  multiline
+  rows={6}
+  required
+  sx={{ width: "30ch" }}
+  defaultValue={
+    "Hello {name},\n\nHere are your credentials:\nStudent Number: {studentNumber}\nPassword: {password}\n\nThank you!"
+  }
+/>
+
                       </div>
                       <Button
                 type="submit"

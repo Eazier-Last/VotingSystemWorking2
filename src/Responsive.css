@@ -16,6 +16,11 @@
   .Sidebar.visible {
     left: 0; /* Slide in */
   }
+
+  .loginInput{
+      /* margin-bottom: 10px; */
+    width: 40ch;
+}
   
   @media (max-width: 600px) {
     .Sidebar {
@@ -47,6 +52,43 @@
     .votePage{
         width: 200px;
     }
+
+
+    .loginInput{
+      
+          width: 80vw;
+    }
+
+    .votePage{
+      width: 80vw;
+    }
+
+    .listContainer{
+      width: 80vw;
+      /* height: 100px; */
+    }
+    .profileRow{
+      height: 100px;
+      width: 100px;
+    }
+
+    .App{
+      display: flex;
+      justify-content: center;
+    }
+
+    .candidateName{
+      font-size: 1rem;
+    }
+
+    .candidateVoteInfo{
+      background-color: rgba(255, 255, 255, 0) !important;
+      width: 10px;
+      font-size: .5rem;
+      /* position: ; */
+      margin-top: -30px;
+    }
+
 
   }
   

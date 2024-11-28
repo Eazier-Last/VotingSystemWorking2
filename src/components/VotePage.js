@@ -253,11 +253,11 @@ function VotePage() {
                     </div>
                     <div className="candidateName votePageLabel">
                       <p style={{color:"black", marginTop:"5", }}>
-                        <span>
+                        <div>
                           {" "}
                           <Button
                             className="candidateVoteInfo"
-                            variant="contained"
+                            variant="outlined"
                             // color="primary"
                             sx={{
                               backgroundColor: "#1ab394",
@@ -267,7 +267,7 @@ function VotePage() {
                           >
                             <InfoIcon />
                           </Button>
-                        </span>
+                        </div>
                         {candidate.name}
                       </p>
                     </div>
