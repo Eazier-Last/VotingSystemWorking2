@@ -46,7 +46,9 @@
     width: 40ch;
 }
 
-.thankYouBody
+.thankYouBody{
+  
+}
   
   @media (max-width: 600px) {
     .Sidebar {

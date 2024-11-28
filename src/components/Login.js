@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "../App.css";
-import "../Responsive.css";
 import { supabase } from "./client"; // Ensure this points to your Supabase client configuration
 import "./Modals/Modals.css";
 import InputLabel from "@mui/material/InputLabel";
@@ -81,13 +80,12 @@ function Login({ setAuthType }) {
               ></img> */}
               <Box
                 component="form"
-                // sx={{ "& .MuiTextField-root": { m: 1, width: "50ch" } }}
+                sx={{ "& .MuiTextField-root": { m: 1, width: "50ch" } }}
                 noValidate
                 autoComplete="off"
               >
                 <div>
                   <TextField
-                   className="loginInput"
                     label="Student Number"
                     id="outlined-size-small"
                     size="small"
@@ -99,14 +97,11 @@ function Login({ setAuthType }) {
                 </div>
               </Box>
             </div>
-            <FormControl
-            //  sx={{ m: 1, width: "50ch" }}
-              variant="outlined">
+            <FormControl sx={{ m: 1, width: "50ch" }} variant="outlined">
               <InputLabel htmlFor="outlined-adornment-password">
                 Password
               </InputLabel>
               <OutlinedInput
-               className="loginInput"
                 id="outlined-adornment-password"
                 type={showPassword ? "text" : "password"}
                 value={password}
