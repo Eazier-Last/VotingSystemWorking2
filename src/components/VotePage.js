@@ -5,6 +5,7 @@ import { supabase } from "./client";
 import AvatarComponent from "./Avatar/AvatarComponent";
 import { useNavigate } from "react-router-dom";
 import "../App.css";
+import "../Responsive.css";
 import "./css/VotePage.css";
 import Button from "@mui/material/Button";
 import ConfirmVote from "./Modals/ConfirmVote"; // Import the confirmation modal

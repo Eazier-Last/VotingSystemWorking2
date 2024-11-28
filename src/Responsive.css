@@ -29,6 +29,8 @@
       /* background-color: #333; Example background */
       transition: left 0.3s ease; /* Smooth slide-in effect */
       z-index: 100;
+
+
     }
     .sidebarMain{
         position: fixed;
@@ -40,5 +42,11 @@
       top: 10px; /* Adjust for spacing */
       left: 10px; /* Adjust for spacing */
     }
+
+
+    .votePage{
+        width: 200px;
+    }
+
   }
   
