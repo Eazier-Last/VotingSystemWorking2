@@ -1,0 +1,44 @@
+
+
+
+.sidebarMenuBtn {
+    position: fixed;
+    top: 5px;
+    left: 5px;
+    z-index: 200;
+    display: none;
+  }
+  
+  .Sidebar {
+
+  }
+  
+  .Sidebar.visible {
+    left: 0; /* Slide in */
+  }
+  
+  @media (max-width: 600px) {
+    .Sidebar {
+      display: block; /* Always display on small screens */
+      position: fixed;
+      /* top: 0; Start from the top */
+      left: -30%; /* Start position off-screen */
+      width: 250px;
+      
+      /* height: 100%; Full height */
+      /* background-color: #333; Example background */
+      transition: left 0.3s ease; /* Smooth slide-in effect */
+      z-index: 100;
+    }
+    .sidebarMain{
+        position: fixed;
+        top: 0;
+    }
+  
+    .sidebarMenuBtn {
+      display: block;
+      top: 10px; /* Adjust for spacing */
+      left: 10px; /* Adjust for spacing */
+    }
+  }
+  
