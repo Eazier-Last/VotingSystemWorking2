@@ -168,7 +168,7 @@ useEffect(() => {
       setTime((prevTime) => {
         const totalSeconds = prevTime.days * 86400 + prevTime.hours * 3600 + prevTime.minutes * 60 + prevTime.seconds;
         
-        if (totalSeconds <= 0) {
+        if (totalSeconds <= -10) {
           clearInterval(intervalRef.current);
           setIsRunning(false);
           return { days: 10, hours: 10, minutes: 10, seconds: 0 };
@@ -454,26 +454,8 @@ useEffect(() => {
 
 </div>
 
-        <div className="timerBtn"><Button style={{width:"100%",}}
-  variant="outlined"
-  sx={{
-    borderWidth: "5px",
-    color: isRunning ? "red" : "#1ab394",
-    "&:hover": {
-      backgroundColor: isRunning ? "red" : "#1ab394",
-      color: "#fff",
-    },
-    borderColor: isRunning ? "red" : "#1ab394",
-    borderRadius: "10px",
-    fontSize: "2rem",
-    height: "70px",
-    
-  }}
-  onClick={handleStartStop}
->
-  {isRunning ? "STOP" : "START"}
-</Button>
-</div>
+
+        
          
 
           
@@ -504,7 +486,28 @@ useEffect(() => {
               borderRadius={50}
             />
           </div>
-          <div className="chart2"><div className="voters">
+          <div className="chart2">
+          <div className="timerBtn"><Button style={{width:"100%", }}
+  variant="outlined"
+  sx={{
+    borderWidth: "5px",
+    color: isRunning ? "red" : "#1ab394",
+    "&:hover": {
+      backgroundColor: isRunning ? "red" : "#1ab394",
+      color: "#fff",
+    },
+    borderColor: isRunning ? "red" : "#1ab394",
+    borderRadius: "10px",
+    fontSize: "2rem",
+    height: "70px",
+    
+  }}
+  onClick={handleStartStop}
+>
+  {isRunning ? "STOP" : "START"}
+</Button>
+</div>  
+            <div className="voters">
           <label className="numVoter">
             <Gauge
               width={100}
