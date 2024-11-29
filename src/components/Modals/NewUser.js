@@ -42,38 +42,33 @@ function NewUser({ onClose, onAddUser, initialData }) {
       return;
     }
 
-    const userData = { name, studentNumber, course, gmail, password };
+    // Step 1: Create user in Supabase Authentication
+    const { error: authError } = await supabase.auth.signUp({
+      email: studentNumber + "@lc.com",
+      password: password,
+    });
 
-    if (initialData) {
-      // Update existing user
-      const { error: updateError } = await supabase
-        .from("users")
-        .update(userData)
-        .eq("studentNumber", initialData.studentNumber);
-
-      if (updateError) {
-        console.error("Error updating user in database:", updateError.message);
-        alert("Failed to update user details: " + updateError.message);
-        return;
-      }
-
-      alert("User updated successfully!");
-    } else {
-      // Insert new user
-      const { error: insertError } = await supabase
-        .from("users")
-        .insert([userData]);
-
-      if (insertError) {
-        console.error("Error saving user to database:", insertError.message);
-        alert("Failed to save user details: " + insertError.message);
-        return;
-      }
-
-      alert("User created successfully!");
-      onAddUser(userData); // Update parent component's UI without duplicate DB insert
+    if (authError) {
+      console.error("Error creating user in Supabase Auth:", authError.message);
+      alert("Failed to create user: " + authError.message);
+      return;
     }
 
+    // Step 2: Save the user details in the 'users' table
+    const userData = { name, studentNumber, course, gmail, password };
+
+    const { error: userError } = await supabase
+      .from("users")
+      .insert([userData]);
+
+    if (userError) {
+      console.error("Error saving user to database:", userError.message);
+      alert("Failed to save user details: " + userError.message);
+      return;
+    }
+
+    alert("User created successfully!");
+    onAddUser(userData); // Update parent component's UI without duplicate DB insert
     onClose(); // Close the modal
   };
 
@@ -96,17 +91,18 @@ function NewUser({ onClose, onAddUser, initialData }) {
           >
             <div>
               <TextField
+                autoComplete="off"
                 label="Student Number"
                 id="outlined-size-small"
                 size="small"
                 required
                 value={studentNumber}
                 onChange={(e) => setStudentNumber(e.target.value)}
-                // disabled={!!initialData} // Disable editing studentNumber if updating
               />
             </div>
             <div>
               <TextField
+                autoComplete="off"
                 label="Name"
                 id="outlined-size-small"
                 size="small"
@@ -117,6 +113,7 @@ function NewUser({ onClose, onAddUser, initialData }) {
             </div>
             <div>
               <TextField
+                autoComplete="off"
                 label="Gmail"
                 id="outlined-size-small"
                 size="small"
@@ -135,27 +132,24 @@ function NewUser({ onClose, onAddUser, initialData }) {
                   label="Course"
                   onChange={(e) => setCourse(e.target.value)}
                 >
-                  <MenuItem value={"BEED"}>BEED</MenuItem>
-                  <MenuItem value={"BPE"}>BPE</MenuItem>
-                  <MenuItem value={"BCAD"}>BCAD</MenuItem>
-                  <MenuItem value={"BTIC"}>BTIC</MenuItem>
-                  <MenuItem value={"BTHE"}>BTHE</MenuItem>
-                  <MenuItem value={"BSED"}>BSED</MenuItem>
-                  <MenuItem value={"BSBA_FM"}>BSBA_FM</MenuItem>
-                  <MenuItem value={"BSBA_MM"}>BSBA_MM</MenuItem>
-                  <MenuItem value={"BSCA"}>BSCA</MenuItem>
-                  <MenuItem value={"BSHM"}>BSHM</MenuItem>
-                  <MenuItem value={"BSTM"}>BSTM</MenuItem>
                   <MenuItem value={"BSIT"}>BSIT</MenuItem>
                   <MenuItem value={"BSCS"}>BSCS</MenuItem>
-                  <MenuItem value={"CRIM"}>CRIM</MenuItem>
-                  <MenuItem value={"PSYCH"}>PSYCH</MenuItem>
-                  <MenuItem value={"SEAMAN"}>SEAMAN</MenuItem>
-                 
+                  <MenuItem value={"BSCA"}>BSCA</MenuItem>
+                  <MenuItem value={"BSBA"}>BSBA</MenuItem>
+                  <MenuItem value={"BSHM"}>BSHM</MenuItem>
+                  <MenuItem value={"BSTM"}>BSTM</MenuItem>
+                  <MenuItem value={"BSE"}>BSE</MenuItem>
+                  <MenuItem value={"BSED"}>BSED</MenuItem>
+                  <MenuItem value={"BSPSY"}>BSPSY</MenuItem>
+                  <MenuItem value={"BSCrim"}>BSCrim</MenuItem>
                 </Select>
               </FormControl>
             </div>
-            <FormControl sx={{ m: 1, width: "50ch" }} variant="outlined">
+            <FormControl
+              autoComplete="off"
+              sx={{ m: 1, width: "50ch" }}
+              variant="outlined"
+            >
               <InputLabel htmlFor="outlined-adornment-password">
                 Password
               </InputLabel>

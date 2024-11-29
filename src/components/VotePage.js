@@ -52,7 +52,11 @@ function VotePage() {
   // Fetch candidates from the database
   useEffect(() => {
     const fetchCandidates = async () => {
-      const { data, error } = await supabase.from("candidates").select("candidateID, avatarUrl, name, skills, description, campaignObjective, position");
+      const { data, error } = await supabase
+        .from("candidates")
+        .select(
+          "candidateID, avatarUrl, name, skills, description, campaignObjective, position"
+        );
       if (error) {
         console.error("Error fetching candidates:", error);
         return;
@@ -208,7 +212,7 @@ function VotePage() {
                 .trim()
                 .toUpperCase()}
             </h3>
-            <div className="profileContainer">
+            <div className="profileContainer votePageProfileContainer">
               {groupedCandidates[position].map((candidate) => {
                 const isSelected =
                   selectedCandidates[position] === candidate.candidateID;
@@ -252,24 +256,34 @@ function VotePage() {
                       </div>
                     </div>
                     <div className="candidateName votePageLabel">
-                      <p style={{color:"black", marginTop:"5", }}>
+                      <div class="votePageProfile">
                         <div>
-                          {" "}
                           <Button
                             className="candidateVoteInfo"
-                            variant="outlined"
+                            variant="contained"
                             // color="primary"
                             sx={{
                               backgroundColor: "#1ab394",
-                              marginRight: 1,
+                              borderRadius: 0,
+                              borderBottomRightRadius: 100,
+                              borderBottomLeftRadius: 100,
+                              // marginRight: 1,
                             }}
                             onClick={() => handleInfoModalOpen(candidate)}
                           >
                             <InfoIcon />
                           </Button>
                         </div>
-                        {candidate.name}
-                      </p>
+                        <div>
+                          <p
+                            className="votePageProfileName"
+                            style={{ color: "black" }}
+                          >
+                            <span> </span>
+                            {candidate.name}
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 );

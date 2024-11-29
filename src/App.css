@@ -33,39 +33,38 @@ body {
   /* flex-direction: row; */
   /* width: 400px; */
 }
- .timer{
+.timer {
   width: 1015px;
   display: grid;
-  
+
   grid-template-columns: 3fr 1.3fr;
   /* height: 20px; */
   /* background-color: white; */
   /* width: 500px; */
   /* border-radius: 20px; */
- }
- .timer1{
+}
+.timer1 {
   border-radius: 10px;
   margin-right: 10px;
   align-items: center;
   display: flex;
   justify-content: center;
   display: none;
-  
- 
+
   background-color: white;
   /* height: 100px; */
- }
- .timerBtn{
+}
+.timerBtn {
   border-radius: 10px;
   margin-bottom: 10px;
   background-color: white;
   /* height: 100px; */
- }
+}
 
 .numVoter,
 .numVoted {
   padding: 20px;
-  
+
   /* margin-right: 8px; */
   /* margin-left: 2px; */
   border-radius: 10px;
@@ -77,10 +76,10 @@ body {
   justify-content: center;
   align-items: center;
 }
-.numVoter{
+.numVoter {
   margin-right: 5px;
 }
-.numVoted{
+.numVoted {
   margin-left: 5px;
 }
 .homeRow {
@@ -108,38 +107,36 @@ body {
   justify-content: center; */
   margin-top: 10px;
   margin-bottom: 5px;
-  
 }
 
 .chart1,
 .chart2 {
   /* margin-right: 5px; */
- 
+
   /* background-color: rgb(255, 255, 255); */
   /* height: 400px; */
   /* width: 500px; */
   /* border-radius: 10px; */
 }
-.chart22{
+.chart22 {
   margin-top: 10px;
   padding-top: 10px;
 
-    /* margin-right: 5px; */
-    /* margin-left: 5px; */
-    background-color: white;
-    /* height: 400px; */
-    /* height: 20px; */
+  /* margin-right: 5px; */
+  /* margin-left: 5px; */
+  background-color: white;
+  /* height: 400px; */
+  /* height: 20px; */
 
-    /* width: 500px; */
-    border-radius: 10px;
-  
+  /* width: 500px; */
+  border-radius: 10px;
 }
-.chart1{
+.chart1 {
   padding-left: 20px;
   background-color: white;
   border-radius: 10px;
 }
-.chart2{
+.chart2 {
   margin-left: 10px;
   border-radius: 10px;
 }
@@ -152,14 +149,13 @@ body {
   /* margin-top: 5px; */
   border-radius: 10px;
 }
-.candidateListContainer{
+.candidateListContainer {
   margin-top: 10px;
-
 }
-.homeListContainer{
+.homeListContainer {
   margin-top: 5px;
 }
-.userContainer{
+.userContainer {
   margin-top: 10px;
 }
 
@@ -422,7 +418,8 @@ body {
 }
 
 .candidateName {
-  line-height: 0;
+  /* line-height: 0; */
+  margin: 0;
   font-size: 1.5rem;
   color: #314051;
   font-weight: 500;
@@ -444,6 +441,24 @@ body {
   color: #1ab394;
 }
 
+.votePageProfile {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 10ch;
+}
+
+.candidateVoteInfo {
+  width: 195px;
+}
+.votePageProfileContainer {
+  text-align: center;
+}
+
+.votePageProfileName {
+  margin: 0;
+}
 .votePageLogout {
   display: flex;
   flex-direction: column;
@@ -533,27 +548,27 @@ body {
   /* margin-bottom: 20px; */
 }
 
-.candidInfoTitle{
+.candidInfoTitle {
   background-color: #1ab394;
   text-align: center;
   /* width: 100% !important; */
 }
 
-.candidInfoProfile{
+.candidInfoProfile {
   margin-top: 20px;
-    display:grid;
-    width: 100%;
+  display: grid;
+  width: 100%;
   grid-template-columns: 1fr 2fr;
 }
 
-.candidInfoImage{
+.candidInfoImage {
   display: flex;
   /* flex: 1f; */
   /* background-color: red; */
 }
-.candidInfoName{
+.candidInfoName {
   display: flex;
-  
+
   align-items: start;
   font-size: 1.5rem;
   padding-top: 10px;
@@ -561,24 +576,23 @@ body {
   /* background-color: blue; */
 }
 
-.candidateDetails{
+.candidateDetails {
   flex-direction: column;
   display: flex;
-  justify-content:center;
+  justify-content: center;
   align-items: center;
 }
 
-.candidInformation{
+.candidInformation {
   width: 100%;
   padding-left: 40px;
 }
 
-.closeInfoBtn{
+.closeInfoBtn {
   width: 250px;
 }
 
-.candidateProfileContainer{
+.candidateProfileContainer {
   margin-top: 70px;
   margin-bottom: 10px;
 }
-

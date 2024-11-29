@@ -2,6 +2,7 @@ import React from "react";
 import { supabase } from "./client";
 import { useNavigate } from "react-router-dom";
 import "../App.css";
+import "../Responsive.css";
 import Button from "@mui/material/Button";
 
 function ThankYouForm({ setAuthType }) {

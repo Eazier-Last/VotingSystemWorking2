@@ -19,18 +19,18 @@ import "../../Responsive.css";
 // Confirmation Modal Component
 function ConfirmVote({ open, onClose, selectedCandidatesList, onSubmit }) {
   return (
-    <Dialog  open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose}>
       <div className="confirmVoteContainer">
         <DialogTitle className="confirmTitle">Confirm Your Vote</DialogTitle>
         <DialogContent>
-          <TableContainer  component={Paper}>
-            <Table >
-              <TableHead >
-                <TableRow >
-                  <TableCell >
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>
                     <strong>Position</strong>
                   </TableCell>
-                  <TableCell >
+                  <TableCell>
                     <strong>Name</strong>
                   </TableCell>
                 </TableRow>

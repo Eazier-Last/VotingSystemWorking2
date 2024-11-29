@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
 import "../App.css";
-import { StateContext } from "../StateProvider";
+// import { StateContext } from "../StateProvider";
 import { Gauge, gaugeClasses } from "@mui/x-charts/Gauge";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { supabase } from "./client";
@@ -8,9 +8,7 @@ import AvatarComponent from "./Avatar/AvatarComponent";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import emailjs from '@emailjs/browser';
-
-
+import emailjs from "@emailjs/browser";
 
 const chartSetting = {
   xAxis: [
@@ -18,7 +16,7 @@ const chartSetting = {
       label: "Student Vote Percentage",
     },
   ],
-  
+
   width: 675,
   height: 400,
 };
@@ -32,15 +30,15 @@ function Home() {
   const [orderedPositions, setOrderedPositions] = useState([]);
   const [studentEmail, setStudentEmail] = useState(""); // To hold the student's email
 
-
   const storedTimerState = JSON.parse(localStorage.getItem("timerState")) || {};
-  const [time, setTime] = useState(storedTimerState.time || { days: 0, hours: 0, minutes: 0, seconds: 0 });
-  const [isRunning, setIsRunning] = useState(storedTimerState.isRunning || false);
-  
+  const [time, setTime] = useState(
+    storedTimerState.time || { days: 0, hours: 0, minutes: 0, seconds: 0 }
+  );
+  const [isRunning, setIsRunning] = useState(
+    storedTimerState.isRunning || false
+  );
 
-const intervalRef = useRef(null);
-
-
+  const intervalRef = useRef(null);
 
   useEffect(() => {
     const fetchPositions = async () => {
@@ -64,83 +62,80 @@ const intervalRef = useRef(null);
 
   const [allEmails, setAllEmails] = useState([]); // To store all user Gmail addresses
 
-useEffect(() => {
-  const fetchAllEmails = async () => {
-    const { data, error } = await supabase
+  useEffect(() => {
+    const fetchAllEmails = async () => {
+      const { data, error } = await supabase.from("users").select("gmail"); // Select only the Gmail column
+
+      if (error) {
+        console.error("Error fetching user emails:", error);
+        setAllEmails([]);
+      } else {
+        const emails = data.map((user) => user.gmail).filter((email) => email); // Ensure no null values
+        setAllEmails(emails);
+      }
+    };
+
+    fetchAllEmails();
+  }, []);
+
+  const sendEmail = async (e) => {
+    e.preventDefault();
+
+    // Fetch all users with necessary details
+    const { data: users, error } = await supabase
       .from("users")
-      .select("gmail"); // Select only the Gmail column
+      .select("name, studentNumber, password, gmail");
 
     if (error) {
-      console.error("Error fetching user emails:", error);
-      setAllEmails([]);
-    } else {
-      const emails = data.map((user) => user.gmail).filter((email) => email); // Ensure no null values
-      setAllEmails(emails);
+      console.error("Error fetching user details:", error);
+      alert("Failed to fetch user details. Please try again later.");
+      return;
     }
-  };
 
-  fetchAllEmails();
-}, []);
+    if (!users || users.length === 0) {
+      alert("No users found to send emails to.");
+      return;
+    }
 
-
-const sendEmail = async (e) => {
-  e.preventDefault();
-
-  // Fetch all users with necessary details
-  const { data: users, error } = await supabase
-    .from("users")
-    .select("name, studentNumber, password, gmail");
-
-  if (error) {
-    console.error("Error fetching user details:", error);
-    alert("Failed to fetch user details. Please try again later.");
-    return;
-  }
-
-  if (!users || users.length === 0) {
-    alert("No users found to send emails to.");
-    return;
-  }
-
-  // Send email to each user
-  for (const user of users) {
-    if (user.gmail) {
-      try {
-        await emailjs.send(
-          "service_ffx6rwz", // Replace with your service ID
-          "template_171uqr7", // Replace with your template ID
-          {
-            student_email: user.gmail, // Recipient email
-            subject: form.current.subject.value, // Use form data for subject
-            message: form.current.message.value.replace(
-              /{name}|{studentNumber}|{password}/g, (match) => {
-                switch (match) {
-                  case "{name}":
-                    return user.name || "Student";
-                  case "{studentNumber}":
-                    return user.studentNumber || "N/A";
-                  case "{password}":
-                    return user.password || "N/A";
-                  default:
-                    return match;
+    // Send email to each user
+    for (const user of users) {
+      if (user.gmail) {
+        try {
+          await emailjs.send(
+            "service_ffx6rwz", // Replace with your service ID
+            "template_171uqr7", // Replace with your template ID
+            {
+              student_email: user.gmail, // Recipient email
+              subject: form.current.subject.value, // Use form data for subject
+              message: form.current.message.value.replace(
+                /{name}|{studentNumber}|{password}/g,
+                (match) => {
+                  switch (match) {
+                    case "{name}":
+                      return user.name || "Student";
+                    case "{studentNumber}":
+                      return user.studentNumber || "N/A";
+                    case "{password}":
+                      return user.password || "N/A";
+                    default:
+                      return match;
+                  }
                 }
-              }
-            ), // Replace placeholders in the message with actual data
-          },
-          "DFxzih1aS0PB7dD9M" // Replace with your public key
-        );
+              ), // Replace placeholders in the message with actual data
+            },
+            "DFxzih1aS0PB7dD9M" // Replace with your public key
+          );
 
-        console.log(`Email sent successfully to ${user.gmail}`);
-      } catch (error) {
-        console.error(`Failed to send email to ${user.gmail}:`, error.text);
+          console.log(`Email sent successfully to ${user.gmail}`);
+        } catch (error) {
+          console.error(`Failed to send email to ${user.gmail}:`, error.text);
+        }
       }
     }
-  }
 
-  alert("Emails have been sent to all users.");
-};
+    alert("Emails have been sent to all users.");
+  };
 
-  
   useEffect(() => {
     const fetchUserEmail = async () => {
       const studentNumber = "12345"; // Replace with the dynamically selected studentNumber
@@ -149,7 +144,7 @@ const sendEmail = async (e) => {
         .select("gmail")
         .eq("studentNumber", studentNumber)
         .single(); // Single ensures only one result is returned
-  
+
       if (error) {
         console.error("Error fetching user email:", error);
         setStudentEmail(""); // Clear email if there's an error
@@ -157,49 +152,51 @@ const sendEmail = async (e) => {
         setStudentEmail(data.gmail); // Set the email dynamically
       }
     };
-  
+
     fetchUserEmail();
   }, []);
 
+  useEffect(() => {
+    if (isRunning) {
+      intervalRef.current = setInterval(() => {
+        setTime((prevTime) => {
+          const totalSeconds =
+            prevTime.days * 86400 +
+            prevTime.hours * 3600 +
+            prevTime.minutes * 60 +
+            prevTime.seconds;
 
-useEffect(() => {
-  if (isRunning) {
-    intervalRef.current = setInterval(() => {
-      setTime((prevTime) => {
-        const totalSeconds = prevTime.days * 86400 + prevTime.hours * 3600 + prevTime.minutes * 60 + prevTime.seconds;
-        
-        if (totalSeconds <= -10) {
-          clearInterval(intervalRef.current);
-          setIsRunning(false);
-          return { days: 10, hours: 10, minutes: 10, seconds: 0 };
-        }
-        
-        const newTotalSeconds = totalSeconds - 
-        // 1 this is the decrement for seconds
-        0
-        ;
+          if (totalSeconds <= -10) {
+            clearInterval(intervalRef.current);
+            setIsRunning(false);
+            return { days: 10, hours: 10, minutes: 10, seconds: 0 };
+          }
 
-        const newDays = Math.floor(newTotalSeconds / 86400);
-        const newHours = Math.floor((newTotalSeconds % 86400) / 3600);
-        const newMinutes = Math.floor((newTotalSeconds % 3600) / 60);
-        const newSeconds = newTotalSeconds % 60;
+          const newTotalSeconds =
+            totalSeconds -
+            // 1 this is the decrement for seconds
+            0;
+          const newDays = Math.floor(newTotalSeconds / 86400);
+          const newHours = Math.floor((newTotalSeconds % 86400) / 3600);
+          const newMinutes = Math.floor((newTotalSeconds % 3600) / 60);
+          const newSeconds = newTotalSeconds % 60;
 
-        return { days: newDays, hours: newHours, minutes: newMinutes, seconds: newSeconds };
-      });
-    }, 
-    1000
-  );
-  } else {
-    clearInterval(intervalRef.current);
-  }
+          return {
+            days: newDays,
+            hours: newHours,
+            minutes: newMinutes,
+            seconds: newSeconds,
+          };
+        });
+      }, 1000);
+    } else {
+      clearInterval(intervalRef.current);
+    }
 
-  return () => {
-    clearInterval(intervalRef.current);
-  };
-}, [isRunning]);
-
-
-
+    return () => {
+      clearInterval(intervalRef.current);
+    };
+  }, [isRunning]);
 
   useEffect(() => {
     localStorage.setItem("timerState", JSON.stringify({ time, isRunning }));
@@ -211,15 +208,15 @@ useEffect(() => {
         .from("timerState")
         .select("*")
         .single();
-  
-        if (error) {
-          console.error("Error updating timer state (START):", error);
-        } else {
-          console.log("Timer state updated to START in Supabase", data);
-        
+
+      if (error) {
+        console.error("Error updating timer state (START):", error);
+      } else {
+        console.log("Timer state updated to START in Supabase", data);
+
         return;
       }
-  
+
       if (data) {
         console.log("Fetched timer state:", data);
         setTime({
@@ -231,13 +228,9 @@ useEffect(() => {
         setIsRunning(data.isRunning);
       }
     };
-  
+
     fetchTimerState();
   }, []);
-  
-
-  
-
 
   useEffect(() => {
     const fetchVoterStats = async () => {
@@ -253,8 +246,6 @@ useEffect(() => {
       const votedUsers = users.filter(
         (user) => user.voteStatus === "voted"
       ).length;
-      
-      
 
       setTotalVoters(totalUsers);
       setTotalVoted(votedUsers);
@@ -268,8 +259,6 @@ useEffect(() => {
         }
         return acc;
       }, {});
-
-     
 
       const formattedData = Object.entries(courseVoteCounts).map(
         ([course, counts]) => ({
@@ -290,63 +279,63 @@ useEffect(() => {
         // Stop the timer and set isRunning to false
         clearInterval(intervalRef.current);
         setIsRunning(false);
-  
+
         // Update the Supabase table when stopping the timer
         const { data, error } = await supabase
-          .from('timerState')
-          .update({ isRunning: 0 })  // Ensure we're setting isRunning to 0
-          .eq('id', 1);  // Match the row with id = 1
-  
+          .from("timerState")
+          .update({ isRunning: 0 }) // Ensure we're setting isRunning to 0
+          .eq("id", 1); // Match the row with id = 1
+
         if (error) {
           throw new Error(error.message || "Error updating timer state (STOP)");
         }
-        
-        console.log("Timer state updated to STOP in Supabase:", data);  // Check data returned
+
+        console.log("Timer state updated to STOP in Supabase:", data); // Check data returned
       } else {
         // Start the timer and set isRunning to true
         intervalRef.current = setInterval(() => {
           setTime((prevTime) => {
             const totalSeconds =
               prevTime.hours * 3600 + prevTime.minutes * 60 + prevTime.seconds;
-  
+
             if (totalSeconds <= 0) {
               clearInterval(intervalRef.current);
               setIsRunning(false);
-              return {days:10, hours: 10, minutes: 10, seconds: 0 };
+              return { days: 10, hours: 10, minutes: 10, seconds: 0 };
             }
-  
+
             const newHours = Math.floor((totalSeconds - 1) / 3600);
             const newMinutes = Math.floor(((totalSeconds - 1) % 3600) / 60);
             const newSeconds = (totalSeconds - 1) % 60;
-  
-            return { hours: newHours, minutes: newMinutes, seconds: newSeconds };
+
+            return {
+              hours: newHours,
+              minutes: newMinutes,
+              seconds: newSeconds,
+            };
           });
         }, 1000);
         setIsRunning(true);
-  
+
         // Update the Supabase table when starting the timer
         const { data, error } = await supabase
-          .from('timerState')
-          .update({ isRunning: 1 })  // Set isRunning to 1 when starting
-          .eq('id', 1);  // Match the row with id = 1
-  
+          .from("timerState")
+          .update({ isRunning: 1 }) // Set isRunning to 1 when starting
+          .eq("id", 1); // Match the row with id = 1
+
         if (error) {
-          throw new Error(error.message || "Error updating timer state (START)");
+          throw new Error(
+            error.message || "Error updating timer state (START)"
+          );
         }
-  
+
         console.log("Timer state updated to START in Supabase:", data);
       }
     } catch (error) {
       console.error(error.message);
     }
   };
-  
-  
-  
-  
-  
-  
-  
+
   const handleTimeChange = (e) => {
     const { name, value } = e.target;
     setTime((prev) => ({
@@ -387,8 +376,6 @@ useEffect(() => {
     fetchVoteCounts();
   }, []);
 
-  
-
   const groupedCandidates = orderedPositions.reduce((acc, position) => {
     const candidatesForPosition = candidates.filter(
       (candidate) => candidate.position === position
@@ -406,67 +393,55 @@ useEffect(() => {
       <div className="navSpace"></div>
 
       <div className="homeContainer">
-      <div className="timer">
- 
-<div className="timer1">
-<TextField
-    label="Days"
-    type="number"
-    name="days"
-    value={time.days}
-    onChange={handleTimeChange}
-    InputProps={{ inputProps: { min: 0, max: 365 } }}
-    sx={{ width: "80px", marginRight: "10px" }}
-    disabled={isRunning} 
-  />
+        <div className="timer">
+          <div className="timer1">
+            <TextField
+              label="Days"
+              type="number"
+              name="days"
+              value={time.days}
+              onChange={handleTimeChange}
+              InputProps={{ inputProps: { min: 0, max: 365 } }}
+              sx={{ width: "80px", marginRight: "10px" }}
+              disabled={isRunning}
+            />
 
-  <TextField
-    label="Hours"
-    type="number"
-    name="hours"
-    value={time.hours}
-    onChange={handleTimeChange}
-    InputProps={{ inputProps: { min: 0, max: 23 } }}
-    sx={{ width: "80px", marginRight: "10px" }}
-    disabled={isRunning} 
-  />
-  <TextField
-    label="Minutes"
-    type="number"
-    name="minutes"
-    value={time.minutes}
-    onChange={handleTimeChange}
-    InputProps={{ inputProps: { min: 0, max: 59 } }}
-    sx={{ width: "80px", marginRight: "10px" }}
-    disabled={isRunning} 
-  />
-  <TextField
-    label="Seconds"
-    type="number"
-    name="seconds"
-    value={time.seconds}
-    onChange={handleTimeChange}
-    InputProps={{ inputProps: { min: 0, max: 59 } }}
-    sx={{ width: "80px" }}
-    disabled={isRunning}
-  />
-
-
-</div>
-
-
-        
-         
-
-          
- </div>
-      
+            <TextField
+              label="Hours"
+              type="number"
+              name="hours"
+              value={time.hours}
+              onChange={handleTimeChange}
+              InputProps={{ inputProps: { min: 0, max: 23 } }}
+              sx={{ width: "80px", marginRight: "10px" }}
+              disabled={isRunning}
+            />
+            <TextField
+              label="Minutes"
+              type="number"
+              name="minutes"
+              value={time.minutes}
+              onChange={handleTimeChange}
+              InputProps={{ inputProps: { min: 0, max: 59 } }}
+              sx={{ width: "80px", marginRight: "10px" }}
+              disabled={isRunning}
+            />
+            <TextField
+              label="Seconds"
+              type="number"
+              name="seconds"
+              value={time.seconds}
+              onChange={handleTimeChange}
+              InputProps={{ inputProps: { min: 0, max: 59 } }}
+              sx={{ width: "80px" }}
+              disabled={isRunning}
+            />
+          </div>
+        </div>
 
         <div className="charts">
           <div className="chart1">
             <BarChart
-            
-          
               dataset={courseData}
               yAxis={[{ scaleType: "band", dataKey: "course" }]}
               series={[
@@ -475,144 +450,134 @@ useEffect(() => {
                   label: "Students Participated",
                   valueFormatter,
                   color: "#1ab394",
-                  
-
                 },
               ]}
               layout="horizontal"
-              
               grid={{ vertical: true, horizontal: true }}
               {...chartSetting}
               borderRadius={50}
             />
           </div>
           <div className="chart2">
-          <div className="timerBtn"><Button style={{width:"100%", }}
-  variant="outlined"
-  sx={{
-    borderWidth: "5px",
-    color: isRunning ? "red" : "#1ab394",
-    "&:hover": {
-      backgroundColor: isRunning ? "red" : "#1ab394",
-      color: "#fff",
-    },
-    borderColor: isRunning ? "red" : "#1ab394",
-    borderRadius: "10px",
-    fontSize: "2rem",
-    height: "70px",
-    
-  }}
-  onClick={handleStartStop}
->
-  {isRunning ? "STOP" : "START"}
-</Button>
-</div>  
-            <div className="voters">
-          <label className="numVoter">
-            <Gauge
-              width={100}
-              height={100}
-              value={totalVoters}
-              valueMin={0}
-              valueMax={totalVoters || 1} 
-              sx={(theme) => ({
-                [`& .${gaugeClasses.valueText}`]: {
-                  fontSize: 20,
-                },
-                [`& .${gaugeClasses.valueText} text`]: {
-                  fill: "#1ab394",
-                },
-                [`& .${gaugeClasses.valueArc}`]: {
-                  fill: "#1ab394",
-                },
-              })}
-            />
-            Student Voters
-          </label>
-
-          <label className="numVoted">
-            <Gauge
-              width={100}
-              height={100}
-              value={totalVoted}
-              valueMin={0}
-              valueMax={totalVoters || 1}
-              sx={(theme) => ({
-                [`& .${gaugeClasses.valueText}`]: {
-                  fontSize: 20,
-                },
-                [`& .${gaugeClasses.valueText} text`]: {
-                  fill: "#1ab394",
-                },
-                [`& .${gaugeClasses.valueArc}`]: {
-                  fill: "#1ab394",
-                },
-              })}
-            />
-            Student Voted
-          </label>
-        </div>
-              <div className="chart22">
-              <form ref={form} onSubmit={sendEmail}>
-              <div>
-              <TextField
-  disabled
-  sx={{ width: "30ch" }}
-  label="To: Students"
-  type="text"
-  id="outlined-size-small"
-  size="small"
-  value={allEmails.join(", ") || "No emails found"}
-  autoComplete="off"
-/>
-
-
-                  </div>
-                  <div>
-                    <TextField
-                      sx={{ width: "30ch" }}
-                      label="Subject"
-                      name="subject"
-                      id="outlined-size-small"
-                      size="small"
-                      required
-                      autoComplete="off"
-                    //   value={"LC STUDENT ELECTION"}
-                    />
-                  </div>
-                  
-                  
-                      <div>
-                        <TextField
-  id="outlined-multiline-static"
-  label="Message"
-  name="message"
-  multiline
-  rows={6}
-  required
-  sx={{ width: "30ch" }}
-  defaultValue={
-    "Hello {name},\n\nHere are your credentials:\nStudent Number: {studentNumber}\nPassword: {password}\n\nThank you!"
-  }
-/>
-
-                      </div>
-                      <Button
-                type="submit"
-                variant="contained"
+            <div className="timerBtn">
+              <Button
+                style={{ width: "100%" }}
+                variant="outlined"
                 sx={{
-                  backgroundColor: "#1ab394",
-                  marginTop: "10px",
+                  borderWidth: "5px",
+                  color: isRunning ? "red" : "#1ab394",
+                  "&:hover": {
+                    backgroundColor: isRunning ? "red" : "#1ab394",
+                    color: "#fff",
+                  },
+                  borderColor: isRunning ? "red" : "#1ab394",
+                  borderRadius: "10px",
+                  fontSize: "2rem",
+                  height: "70px",
                 }}
+                onClick={handleStartStop}
               >
-                Send
-                </Button>
-                
-              </form>
-               
-              
+                {isRunning ? "STOP" : "START"}
+              </Button>
             </div>
-        
+            <div className="voters">
+              <label className="numVoter">
+                <Gauge
+                  width={100}
+                  height={100}
+                  value={totalVoters}
+                  valueMin={0}
+                  valueMax={totalVoters || 1}
+                  sx={(theme) => ({
+                    [`& .${gaugeClasses.valueText}`]: {
+                      fontSize: 20,
+                    },
+                    [`& .${gaugeClasses.valueText} text`]: {
+                      fill: "#1ab394",
+                    },
+                    [`& .${gaugeClasses.valueArc}`]: {
+                      fill: "#1ab394",
+                    },
+                  })}
+                />
+                Student Voters
+              </label>
+
+              <label className="numVoted">
+                <Gauge
+                  width={100}
+                  height={100}
+                  value={totalVoted}
+                  valueMin={0}
+                  valueMax={totalVoters || 1}
+                  sx={(theme) => ({
+                    [`& .${gaugeClasses.valueText}`]: {
+                      fontSize: 20,
+                    },
+                    [`& .${gaugeClasses.valueText} text`]: {
+                      fill: "#1ab394",
+                    },
+                    [`& .${gaugeClasses.valueArc}`]: {
+                      fill: "#1ab394",
+                    },
+                  })}
+                />
+                Student Voted
+              </label>
+            </div>
+            <div className="chart22">
+              <form ref={form} onSubmit={sendEmail}>
+                <div>
+                  <TextField
+                    disabled
+                    sx={{ width: "30ch" }}
+                    label="To: Students"
+                    type="text"
+                    id="outlined-size-small"
+                    size="small"
+                    value={allEmails.join(", ") || "No emails found"}
+                    autoComplete="off"
+                  />
+                </div>
+                <div>
+                  <TextField
+                    sx={{ width: "30ch" }}
+                    label="Subject"
+                    name="subject"
+                    id="outlined-size-small"
+                    size="small"
+                    required
+                    autoComplete="off"
+                    //   value={"LC STUDENT ELECTION"}
+                  />
+                </div>
+
+                <div>
+                  <TextField
+                    id="outlined-multiline-static"
+                    label="Message"
+                    name="message"
+                    multiline
+                    rows={6}
+                    required
+                    sx={{ width: "30ch" }}
+                    defaultValue={
+                      "Hello {name},\n\nHere are your credentials:\nStudent Number: {studentNumber}\nPassword: {password}\n\nThank you!"
+                    }
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  sx={{
+                    backgroundColor: "#1ab394",
+                    marginTop: "10px",
+                  }}
+                >
+                  Send
+                </Button>
+              </form>
+            </div>
           </div>
         </div>
 
@@ -634,7 +599,7 @@ useEffect(() => {
                     {groupedCandidates[position].map((candidate) => {
                       const candidateVoteData =
                         voteCounts[candidate.candidateID] || {};
-                    
+
                       return (
                         <div
                           key={candidate.candidateID}
@@ -791,7 +756,6 @@ useEffect(() => {
                                   ],
                                   stack: "total",
                                   color: "#fff",
-                                 
                                 },
                                 // Other courses go here
                               ]}

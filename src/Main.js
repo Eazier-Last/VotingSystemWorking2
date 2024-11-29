@@ -103,8 +103,7 @@ function Main({ onLogout }) {
 
   useEffect(() => {
     loadComponent(window.location.pathname);
-  }, [window.location.pathname]); // Adding the pathname as a dependency
-  
+  });
 
   return (
     <div className="App">
