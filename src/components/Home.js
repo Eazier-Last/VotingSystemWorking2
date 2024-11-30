@@ -102,8 +102,8 @@ function Home() {
       if (user.gmail) {
         try {
           await emailjs.send(
-            "service_ffx6rwz", // Replace with your service ID
-            "template_171uqr7", // Replace with your template ID
+            "service_sz09zt8", // Replace with your service ID
+            "template_ay3hlzf", // Replace with your template ID
             {
               student_email: user.gmail, // Recipient email
               subject: form.current.subject.value, // Use form data for subject
@@ -123,7 +123,7 @@ function Home() {
                 }
               ), // Replace placeholders in the message with actual data
             },
-            "DFxzih1aS0PB7dD9M" // Replace with your public key
+            "LhnFSq5KEPU55gCkr" // Replace with your public key
           );
 
           console.log(`Email sent successfully to ${user.gmail}`);
