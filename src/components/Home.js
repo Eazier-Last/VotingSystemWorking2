@@ -18,7 +18,7 @@ const chartSetting = {
   ],
 
   width: 675,
-  height: 400,
+  height: 540,
 };
 
 function Home() {
