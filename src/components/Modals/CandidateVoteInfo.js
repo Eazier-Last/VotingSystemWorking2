@@ -1,4 +1,4 @@
-// src/Modals/CandidateVoteInfo.js
+
 
 import React from "react";
 import Dialog from "@mui/material/Dialog";
@@ -10,7 +10,7 @@ import "./Modals.css";
 
 function CandidateVoteInfo({ open, onClose, candidateInfo }) {
   if (!candidateInfo) {
-    return null; // If no candidate is selected, don't render anything
+    return null; 
   }
 
   const { avatarUrl, name, skills, description, campaignObjective } =
@@ -67,7 +67,7 @@ function CandidateVoteInfo({ open, onClose, candidateInfo }) {
                   className="candidateDescription"
                   style={{ marginBottom: "10px" }}
                 >
-                  <strong>Description:</strong>
+                  <strong>Party List:</strong>
                   <p>{description}</p>
                 </div>
               )}

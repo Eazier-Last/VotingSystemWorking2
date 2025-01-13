@@ -28,7 +28,7 @@ function Home() {
   const [totalVoted, setTotalVoted] = useState(0);
   const [courseData, setCourseData] = useState([]);
   const [orderedPositions, setOrderedPositions] = useState([]);
-  const [studentEmail, setStudentEmail] = useState(""); // To hold the student's email
+  const [studentEmail, setStudentEmail] = useState("");
 
   const storedTimerState = JSON.parse(localStorage.getItem("timerState")) || {};
   const [time, setTime] = useState(
@@ -60,17 +60,17 @@ function Home() {
 
   const form = useRef();
 
-  const [allEmails, setAllEmails] = useState([]); // To store all user Gmail addresses
+  const [allEmails, setAllEmails] = useState([]);
 
   useEffect(() => {
     const fetchAllEmails = async () => {
-      const { data, error } = await supabase.from("users").select("gmail"); // Select only the Gmail column
+      const { data, error } = await supabase.from("users").select("gmail");
 
       if (error) {
         console.error("Error fetching user emails:", error);
         setAllEmails([]);
       } else {
-        const emails = data.map((user) => user.gmail).filter((email) => email); // Ensure no null values
+        const emails = data.map((user) => user.gmail).filter((email) => email);
         setAllEmails(emails);
       }
     };
@@ -81,7 +81,6 @@ function Home() {
   const sendEmail = async (e) => {
     e.preventDefault();
 
-    // Fetch all users with necessary details
     const { data: users, error } = await supabase
       .from("users")
       .select("name, studentNumber, password, gmail");
@@ -97,16 +96,15 @@ function Home() {
       return;
     }
 
-    // Send email to each user
     for (const user of users) {
       if (user.gmail) {
         try {
           await emailjs.send(
-            "service_sz09zt8", // Replace with your service ID
-            "template_ay3hlzf", // Replace with your template ID
+            "service_ffx6rwz",
+            "template_171uqr7",
             {
-              student_email: user.gmail, // Recipient email
-              subject: form.current.subject.value, // Use form data for subject
+              student_email: user.gmail,
+              subject: form.current.subject.value,
               message: form.current.message.value.replace(
                 /{name}|{studentNumber}|{password}/g,
                 (match) => {
@@ -121,9 +119,9 @@ function Home() {
                       return match;
                   }
                 }
-              ), // Replace placeholders in the message with actual data
+              ),
             },
-            "LhnFSq5KEPU55gCkr" // Replace with your public key
+            "DFxzih1aS0PB7dD9M"
           );
 
           console.log(`Email sent successfully to ${user.gmail}`);
@@ -138,18 +136,18 @@ function Home() {
 
   useEffect(() => {
     const fetchUserEmail = async () => {
-      const studentNumber = "12345"; // Replace with the dynamically selected studentNumber
+      const studentNumber = "12345";
       const { data, error } = await supabase
         .from("users")
         .select("gmail")
         .eq("studentNumber", studentNumber)
-        .single(); // Single ensures only one result is returned
+        .single();
 
       if (error) {
         console.error("Error fetching user email:", error);
-        setStudentEmail(""); // Clear email if there's an error
+        setStudentEmail("");
       } else {
-        setStudentEmail(data.gmail); // Set the email dynamically
+        setStudentEmail(data.gmail);
       }
     };
 
@@ -172,10 +170,7 @@ function Home() {
             return { days: 10, hours: 10, minutes: 10, seconds: 0 };
           }
 
-          const newTotalSeconds =
-            totalSeconds -
-            // 1 this is the decrement for seconds
-            0;
+          const newTotalSeconds = totalSeconds - 0;
           const newDays = Math.floor(newTotalSeconds / 86400);
           const newHours = Math.floor((newTotalSeconds % 86400) / 3600);
           const newMinutes = Math.floor((newTotalSeconds % 3600) / 60);
@@ -273,26 +268,74 @@ function Home() {
     fetchVoterStats();
   }, []);
 
+  const handleReset = async () => {
+    // Show confirmation dialog
+    const isConfirmed = window.confirm(
+      "Are you sure you want to reset the votes?"
+    );
+
+    if (!isConfirmed) {
+      return; // If the user cancels, stop the reset operation
+    }
+
+    try {
+      // Reset vote counts in the voteCountManage table
+      const { data: voteCountData, error: voteCountError } = await supabase
+        .from("voteCountManage")
+        .update({
+          BSIT: 0,
+          BSBA: 0,
+          BSHM: 0,
+          BSTM: 0,
+          BSE: 0,
+          BSED: 0,
+          BSPSY: 0,
+          BSCRIM: 0,
+          BSCS: 0,
+          BSCA: 0,
+        })
+        .not("id", "is", null); // Updates rows where "id" is NOT null.
+
+      if (voteCountError) {
+        throw new Error(voteCountError.message);
+      }
+      console.log("Vote counts have been reset:", voteCountData);
+
+      // Reset voteStatus in the users table
+      const { data: userData, error: userError } = await supabase
+        .from("users")
+        .update({ voteStatus: null }) // Set voteStatus to NULL
+        .not("id", "is", null); // Updates rows where "id" is NOT null.
+
+      if (userError) {
+        throw new Error(userError.message);
+      }
+      console.log("User voteStatus has been reset:", userData);
+
+      alert("Vote counts and user voteStatus have been reset.");
+    } catch (error) {
+      console.error("Error resetting data:", error);
+      alert(`Error resetting data: ${error.message}`);
+    }
+  };
+
   const handleStartStop = async () => {
     try {
       if (isRunning) {
-        // Stop the timer and set isRunning to false
         clearInterval(intervalRef.current);
         setIsRunning(false);
 
-        // Update the Supabase table when stopping the timer
         const { data, error } = await supabase
           .from("timerState")
-          .update({ isRunning: 0 }) // Ensure we're setting isRunning to 0
-          .eq("id", 1); // Match the row with id = 1
+          .update({ isRunning: 0 })
+          .eq("id", 1);
 
         if (error) {
           throw new Error(error.message || "Error updating timer state (STOP)");
         }
 
-        console.log("Timer state updated to STOP in Supabase:", data); // Check data returned
+        console.log("Timer state updated to STOP in Supabase:", data);
       } else {
-        // Start the timer and set isRunning to true
         intervalRef.current = setInterval(() => {
           setTime((prevTime) => {
             const totalSeconds =
@@ -317,11 +360,10 @@ function Home() {
         }, 1000);
         setIsRunning(true);
 
-        // Update the Supabase table when starting the timer
         const { data, error } = await supabase
           .from("timerState")
-          .update({ isRunning: 1 }) // Set isRunning to 1 when starting
-          .eq("id", 1); // Match the row with id = 1
+          .update({ isRunning: 1 })
+          .eq("id", 1);
 
         if (error) {
           throw new Error(
@@ -479,6 +521,27 @@ function Home() {
               >
                 {isRunning ? "STOP" : "START"}
               </Button>
+              <Button
+                style={{ width: "100%" }}
+                variant="outlined"
+                sx={{
+                  backgroundColor: "red",
+                  marginTop: "10px",
+                  borderWidth: "5px",
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: "white",
+                    color: "red",
+                  },
+                  borderColor: "red",
+                  borderRadius: "10px",
+                  fontSize: "2rem",
+                  height: "50px",
+                }}
+                onClick={handleReset} // Attach the reset handler here
+              >
+                RESET
+              </Button>
             </div>
             <div className="voters">
               <label className="numVoter">
@@ -562,7 +625,7 @@ function Home() {
                     required
                     sx={{ width: "30ch" }}
                     defaultValue={
-                      "Hello {name},\n\nHere are your credentials:\nStudent Number: {studentNumber}\nPassword: {password}\n\nThank you!"
+                      "Hello {name},\n\nHere is the Result of\n\nThank you!"
                     }
                   />
                 </div>
@@ -618,6 +681,9 @@ function Home() {
                             </div>
                           </div>
                           <div>
+                            <p className="homeCandidateName">
+                              {candidate.name}
+                            </p>
                             <BarChart
                               layout="horizontal"
                               width={850}
@@ -757,7 +823,6 @@ function Home() {
                                   stack: "total",
                                   color: "#fff",
                                 },
-                                // Other courses go here
                               ]}
                               yAxis={[
                                 {

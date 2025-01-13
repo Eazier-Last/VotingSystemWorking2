@@ -7,7 +7,7 @@ const SUPABASE_SERVICE_KEY =
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY,{
 
 auth: {
-  persistSession: true, // Ensures the session persists in local storage
+  persistSession: true, 
 },
 });
 

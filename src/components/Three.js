@@ -11,12 +11,12 @@ import DeleteIcon from "@mui/icons-material/Delete";
 function Three() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [candidates, setCandidates] = useState([]);
-  const [positions, setPositions] = useState([]); // Positions order from Two.js
+  const [positions, setPositions] = useState([]); 
   const [editingCandidate, setEditingCandidate] = useState(null);
 
   const toggleModal = () => {
     if (isModalOpen) {
-      setEditingCandidate(null); // Reset only when closing
+      setEditingCandidate(null); 
     }
     setIsModalOpen(!isModalOpen);
   };
@@ -86,7 +86,7 @@ function Three() {
         console.error("Error fetching positions:", error);
         return;
       }
-      // Ensure positions are ordered based on database
+      
       setPositions(data.map((pos) => pos.positions));
     };
 
@@ -94,7 +94,7 @@ function Three() {
     fetchPositions();
   }, []);
 
-  // Group and sort candidates based on position order
+  
   const groupedCandidates = candidates.reduce((acc, candidate) => {
     acc[candidate.position] = acc[candidate.position] || [];
     acc[candidate.position].push(candidate);

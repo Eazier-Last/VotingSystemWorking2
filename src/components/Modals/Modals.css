@@ -9,6 +9,10 @@
   align-items: center;
 }
 
+.createAcc {
+  z-index: 100;
+}
+
 .modalOverlay {
   position: absolute;
   top: 0;
@@ -108,3 +112,14 @@ span {
   width: 420px;
 }
 
+.createAccount {
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+}
+
+.modalCreateAccount {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

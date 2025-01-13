@@ -1,5 +1,3 @@
-// src/VotePage.js
-
 import React, { useState, useEffect } from "react";
 import { supabase } from "./client";
 import AvatarComponent from "./Avatar/AvatarComponent";
@@ -8,20 +6,19 @@ import "../App.css";
 import "../Responsive.css";
 import "./css/VotePage.css";
 import Button from "@mui/material/Button";
-import ConfirmVote from "./Modals/ConfirmVote"; // Import the confirmation modal
-import CandidateVoteInfo from "./Modals/CandidateVoteInfo"; // Import the candidate info modal
+import ConfirmVote from "./Modals/ConfirmVote";
+import CandidateVoteInfo from "./Modals/CandidateVoteInfo";
 import InfoIcon from "@mui/icons-material/Info";
 
 function VotePage() {
   const [candidates, setCandidates] = useState([]);
   const [selectedCandidates, setSelectedCandidates] = useState({});
   const [userCourse, setUserCourse] = useState(null);
-  const [openModal, setOpenModal] = useState(false); // Confirmation modal state
-  const [infoModalOpen, setInfoModalOpen] = useState(false); // Candidate info modal state
-  const [selectedCandidateInfo, setSelectedCandidateInfo] = useState(null); // Store candidate info for the modal
+  const [openModal, setOpenModal] = useState(false);
+  const [infoModalOpen, setInfoModalOpen] = useState(false);
+  const [selectedCandidateInfo, setSelectedCandidateInfo] = useState(null);
   const navigate = useNavigate();
 
-  // Check if the user has already voted
   useEffect(() => {
     const checkVoteStatus = async () => {
       const {
@@ -31,7 +28,7 @@ function VotePage() {
         const { data, error } = await supabase
           .from("users")
           .select("voteStatus, course")
-          .eq("studentNumber", user.email.split("@")[0]) // Extract studentNumber
+          .eq("studentNumber", user.email.split("@")[0])
           .single();
 
         if (error) {
@@ -42,14 +39,13 @@ function VotePage() {
         if (data?.voteStatus === "voted") {
           navigate("/thank-you");
         } else {
-          setUserCourse(data.course); // Set user's course for vote counting
+          setUserCourse(data.course);
         }
       }
     };
     checkVoteStatus();
   }, [navigate]);
 
-  // Fetch candidates from the database
   useEffect(() => {
     const fetchCandidates = async () => {
       const { data, error } = await supabase
@@ -66,7 +62,6 @@ function VotePage() {
     fetchCandidates();
   }, []);
 
-  // Handle selecting a candidate
   const handleCandidateSelect = (position, candidateID) => {
     setSelectedCandidates((prev) => ({
       ...prev,
@@ -74,36 +69,48 @@ function VotePage() {
     }));
   };
 
-  // Open confirmation modal
   const handleOpenModal = () => {
     setOpenModal(true);
   };
 
-  // Close confirmation modal
   const handleCloseModal = () => {
     setOpenModal(false);
   };
 
-  // Open candidate info modal
   const handleInfoModalOpen = (candidate) => {
-    setSelectedCandidateInfo(candidate); // Pass candidate info to the modal
+    setSelectedCandidateInfo(candidate);
     setInfoModalOpen(true);
   };
 
-  // Close candidate info modal
   const handleInfoModalClose = () => {
     setInfoModalOpen(false);
     setSelectedCandidateInfo(null);
   };
 
-  // Handle submitting the vote
   const handleSubmitVote = async () => {
-    handleCloseModal(); // Close the modal
+    handleCloseModal();
     const allPositionsSelected = Object.keys(groupedCandidates).every(
       (position) => selectedCandidates[position]
     );
 
     if (!allPositionsSelected) {
+      const missingPosition = Object.keys(groupedCandidates).find(
+        (position) => !selectedCandidates[position]
+      );
+
+      if (missingPosition) {
+        // Scroll to the missing position
+        const positionElement = document.getElementById(
+          `position-${missingPosition}`
+        );
+        if (positionElement) {
+          positionElement.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        }
+      }
+
       alert("Please select a candidate for each position.");
       return;
     }
@@ -117,7 +124,6 @@ function VotePage() {
       for (const position in selectedCandidates) {
         const candidateID = selectedCandidates[position];
 
-        // Check if a row for the candidate already exists
         let { data: candidateData, error: fetchError } = await supabase
           .from("voteCountManage")
           .select(userCourse)
@@ -125,7 +131,6 @@ function VotePage() {
           .single();
 
         if (fetchError && fetchError.code === "PGRST116") {
-          // No row found, so insert a new row with initial count 1 for the user's course
           const { error: insertError } = await supabase
             .from("voteCountManage")
             .insert({
@@ -139,7 +144,6 @@ function VotePage() {
             return;
           }
         } else if (candidateData) {
-          // Row exists, so increment the count
           const currentCount = candidateData[userCourse] || 0;
           const updatedCount = currentCount + 1;
 
@@ -156,7 +160,6 @@ function VotePage() {
         }
       }
 
-      // Update the user's vote status
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -181,14 +184,12 @@ function VotePage() {
     }
   };
 
-  // Group candidates by position
   const groupedCandidates = candidates.reduce((acc, candidate) => {
     acc[candidate.position] = acc[candidate.position] || [];
     acc[candidate.position].push(candidate);
     return acc;
   }, {});
 
-  // Prepare selected candidates for the modal
   const selectedCandidatesList = Object.keys(selectedCandidates)
     .map((position) => {
       const candidateID = selectedCandidates[position];
@@ -205,7 +206,7 @@ function VotePage() {
           <p className="votePageLabel">Select an image to vote</p>
         </div>
         {Object.keys(groupedCandidates).map((position) => (
-          <div key={position}>
+          <div key={position} id={`position-${position}`}>
             <h3 className="position votePageLabel">
               {position
                 .replace(/([A-Z])/g, " $1")
@@ -217,9 +218,8 @@ function VotePage() {
                 const isSelected =
                   selectedCandidates[position] === candidate.candidateID;
                 return (
-                  <div>
+                  <div key={candidate.candidateID}>
                     <div
-                      key={candidate.candidateID}
                       className={`candidate ${isSelected ? "selected" : ""}`}
                       onClick={() =>
                         handleCandidateSelect(position, candidate.candidateID)
@@ -261,13 +261,11 @@ function VotePage() {
                           <Button
                             className="candidateVoteInfo"
                             variant="contained"
-                            // color="primary"
                             sx={{
                               backgroundColor: "#1ab394",
                               borderRadius: 0,
                               borderBottomRightRadius: 100,
                               borderBottomLeftRadius: 100,
-                              // marginRight: 1,
                             }}
                             onClick={() => handleInfoModalOpen(candidate)}
                           >

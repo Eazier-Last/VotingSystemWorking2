@@ -13,8 +13,8 @@ function ThankYouForm({ setAuthType }) {
     if (error) {
       console.error("Error during logout:", error.message);
     } else {
-      setAuthType(null); // Reset authType to null to clear user authentication
-      navigate("/"); // Redirect to Login.js
+      setAuthType(null); 
+      navigate("/"); 
     }
   };
 

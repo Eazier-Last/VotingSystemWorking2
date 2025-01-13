@@ -16,7 +16,7 @@ import Button from "@mui/material/Button";
 import "./Modals.css";
 import "../../Responsive.css";
 
-// Confirmation Modal Component
+
 function ConfirmVote({ open, onClose, selectedCandidatesList, onSubmit }) {
   return (
     <Dialog open={open} onClose={onClose}>

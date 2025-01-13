@@ -1,0 +1,10 @@
+body {
+  display: flex;
+  justify-content: center;
+}
+
+.logoutButtonContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

@@ -11,16 +11,20 @@ function ElectionHold({ setAuthType }) {
     if (error) {
       console.error("Error during logout:", error.message);
     } else {
-      setAuthType(null); // Reset authType to null to clear user authentication
-      // Redirect to login
-      navigate("/"); // Navigate to the login page which will trigger a component refresh
+      setAuthType(null); 
+      
+      navigate("/"); 
     }
+  };
+
+  const goToResults = () => {
+    navigate("/results"); 
   };
 
   return (
     <div className="thankYouBody">
       <div className="thankYou">
-        <h1>Election is currently on hold!</h1>
+        <h1>Election is now Over!</h1>
         <p>Come back later.</p>
         <Button
           onClick={handleLogout}
@@ -33,6 +37,12 @@ function ElectionHold({ setAuthType }) {
         >
           Logout
         </Button>
+        <p
+          style={{ color: "blue", cursor: "pointer", textDecoration: "underline" }}
+          onClick={goToResults} 
+        >
+          View Results
+        </p>
       </div>
     </div>
   );

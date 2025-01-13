@@ -4,7 +4,7 @@ import "../App.css";
 function Header({ onLogout }) {
   return (
     <div className="headerContainer">
-      <header className="header">LC SELECT</header>
+      <header className="header">STUDENT COUNCIL ELECTION</header>
     </div>
   );
 }

@@ -29,10 +29,21 @@ function Two() {
   };
 
   const handleAddPosition = async () => {
-    if (!positionInput) return;
+    if (!positionInput.trim()) return;
+
+    // Check for duplicates in the local state
+    const isDuplicate = positions.some(
+      (position) =>
+        position.positions.toLowerCase() === positionInput.toLowerCase()
+    );
+
+    if (isDuplicate) {
+      alert("Position name already exists!");
+      return;
+    }
 
     if (editIndex !== null) {
-      // Update existing position
+      // Editing an existing position
       const updatedPositions = [...positions];
       updatedPositions[editIndex].positions = positionInput;
 
@@ -48,7 +59,7 @@ function Two() {
 
       setEditIndex(null);
     } else {
-      // Add new position
+      // Adding a new position
       const newPositionOrder = positions.length + 1;
       const { data, error } = await supabase
         .from("positions")

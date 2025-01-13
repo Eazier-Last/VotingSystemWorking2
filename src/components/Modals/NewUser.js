@@ -13,13 +13,13 @@ import Button from "@mui/material/Button";
 import CloseIcon from "@mui/icons-material/Close";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
-import { supabase } from "../client"; // Ensure you import your configured Supabase client
+import { supabase } from "../client"; 
 
 function NewUser({ onClose, onAddUser, initialData }) {
   const [name, setName] = useState("");
   const [studentNumber, setStudentNumber] = useState("");
   const [course, setCourse] = useState("");
-  const [gmail, setGmail] = useState(""); // Add Gmail state
+  const [gmail, setGmail] = useState(""); 
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
@@ -30,7 +30,7 @@ function NewUser({ onClose, onAddUser, initialData }) {
       setName(initialData.name);
       setStudentNumber(initialData.studentNumber);
       setCourse(initialData.course);
-      setGmail(initialData.gmail); // Set Gmail if editing
+      setGmail(initialData.gmail); 
       setPassword(initialData.password);
     }
   }, [initialData]);
@@ -42,7 +42,7 @@ function NewUser({ onClose, onAddUser, initialData }) {
       return;
     }
 
-    // Step 1: Create user in Supabase Authentication
+    
     const { error: authError } = await supabase.auth.signUp({
       email: studentNumber + "@lc.com",
       password: password,
@@ -54,7 +54,7 @@ function NewUser({ onClose, onAddUser, initialData }) {
       return;
     }
 
-    // Step 2: Save the user details in the 'users' table
+    
     const userData = { name, studentNumber, course, gmail, password };
 
     const { error: userError } = await supabase
@@ -68,8 +68,8 @@ function NewUser({ onClose, onAddUser, initialData }) {
     }
 
     alert("User created successfully!");
-    onAddUser(userData); // Update parent component's UI without duplicate DB insert
-    onClose(); // Close the modal
+    onAddUser(userData); 
+    onClose(); 
   };
 
   return (
@@ -119,7 +119,7 @@ function NewUser({ onClose, onAddUser, initialData }) {
                 size="small"
                 required
                 value={gmail}
-                onChange={(e) => setGmail(e.target.value)} // Capture Gmail input
+                onChange={(e) => setGmail(e.target.value)} 
               />
             </div>
             <div>
@@ -141,7 +141,7 @@ function NewUser({ onClose, onAddUser, initialData }) {
                   <MenuItem value={"BSE"}>BSE</MenuItem>
                   <MenuItem value={"BSED"}>BSED</MenuItem>
                   <MenuItem value={"BSPSY"}>BSPSY</MenuItem>
-                  <MenuItem value={"BSCrim"}>BSCrim</MenuItem>
+                  <MenuItem value={"BSCRIM"}>BSCRIM</MenuItem>
                 </Select>
               </FormControl>
             </div>

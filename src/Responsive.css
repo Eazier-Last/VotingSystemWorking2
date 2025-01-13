@@ -29,6 +29,7 @@
 
 .confirmVoteContainer {
   width: 25vw;
+  
 }
 
 .Sidebar {
@@ -44,6 +45,23 @@
 }
 
 .thankYouBody {
+}
+
+.resultsBarChart{
+  width: 600;
+}
+.resultsContainer{
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+.logoutButtonContainer{
+  display: flex;
+  justify-content: end;
+  margin-bottom: 10px;
+  /* width: ; */
+  /* border-radius: 100; */
 }
 
 @media (max-width: 600px) {
@@ -131,4 +149,24 @@
   .thankYouBody {
     text-align: center;
   }
+
+  .resultsContainer{
+    width: 80vw;
+}
+.homeTopLabel{
+
+  font-size: 1rem;
+  line-height: 20rem;
+  height: 2rem;
+}
+
+.HomePosition{
+  font-size: 1rem;
+  line-height: 1.2rem;
+}
+
+.BarChart{
+  width: 100px;
+}
+
 }

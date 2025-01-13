@@ -15,7 +15,7 @@ function Main({ onLogout }) {
   const [isRunning, setIsRunning] = useState(false);
   const intervalRef = useRef(null);
 
-  // Timer Handlers
+  
   const handleStartStop = () => {
     if (isRunning) {
       clearInterval(intervalRef.current);
@@ -52,7 +52,7 @@ function Main({ onLogout }) {
   };
 
   useEffect(() => {
-    return () => clearInterval(intervalRef.current); // Clear interval on unmount
+    return () => clearInterval(intervalRef.current); 
   }, []);
 
   const loadComponent = (path) => {
@@ -131,7 +131,7 @@ function Main({ onLogout }) {
           variant="contained"
           color="secondary"
           onClick={() => {
-            console.log("Logout button clicked"); // Debugging line
+            console.log("Logout button clicked"); 
             onLogout();
           }}
         >
